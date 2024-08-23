@@ -3,18 +3,12 @@ import {
   createUserService,
   deleteUserService,
   getUserByIdService,
-  getUserService,
   updateUserService,
   userLoginService,
 } from "../services/users-service";
 
 import { badRequest } from "../utils/status-http";
 import { UserModel } from "../models/user-model";
-
-export const getAllUsers = async (req: Request, res: Response) => {
-  const httpResponse = await getUserService();
-  res.status(httpResponse.statusCode).json(httpResponse.body);
-};
 
 export const getUserById = async (req: Request, res: Response) => {
   const id: string = req.params.id;
