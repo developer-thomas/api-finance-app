@@ -2,21 +2,9 @@ import { UserModel } from "../models/user-model";
 import * as userRepository from "../repositories/users/users-repository";
 import * as HttpResponse from "../utils/status-http";
 
-export const getUserService = async () => {
-  const data = await userRepository.getAllUsers();
-  let dataResponse = null;
-
-  if (!data) {
-    return await HttpResponse.noContent(data);
-  } else {
-    dataResponse = await HttpResponse.statusOk(data);
-  }
-  return dataResponse;
-};
-
 export const getUserByIdService = async (id: string) => {
   const idParam = parseInt(id);
-  const data = await userRepository.getUserById(idParam);
+  const data = await userRepository.getUserAccountInfoById(idParam);
 
   if (!data) {
     return HttpResponse.noContent(data);
@@ -64,6 +52,17 @@ export const updateUserService = async (id: number, user: UserModel) => {
     response = await HttpResponse.badRequest();
   } else {
     response = await HttpResponse.statusOk(data);
+  }
+  return response;
+};
+
+export const userLoginService = async (cpf: string, password: string) => {
+  const userReq = await userRepository.userLogin(cpf, password);
+  let response;
+  if (userReq) {
+    response = HttpResponse.statusOk({ message: "Usuário logado com sucesso", userReq });
+  } else {
+    response = HttpResponse.badRequest({ message: "CPF ou senha incorretos.", userReq });
   }
   return response;
 };

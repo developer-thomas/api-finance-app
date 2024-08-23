@@ -1,15 +1,17 @@
 import { UserModel } from "../../models/user-model";
-import { allUsers } from "../../data/all-users";
+import { allUsers, creditCardDetails, transactions, userBalances } from "../../data/all-users";
+import jwt from "jsonwebtoken";
+
+const SECRET = process.env.JWT_SECRET;
 
 const users: UserModel[] = allUsers;
 
-export const getAllUsers = async (): Promise<UserModel[]> => {
-  return users;
-};
-
-export const getUserById = async (id: number): Promise<UserModel | undefined> => {
-  const user = users.find((user) => user.id === id);
-  return user;
+export const getUserAccountInfoById = async (id: number): Promise<any> => {
+  const balances = userBalances.find((user) => user.userId === id);
+  const creditCards = creditCardDetails.find((user) => user.userId === id);
+  const userTransactions = transactions.find((user) => user.userId === id);
+  const allInfos = { ...balances, ...creditCards, ...userTransactions };
+  return allInfos;
 };
 
 export const addUser = async (newUser: UserModel) => {
@@ -34,4 +36,26 @@ export const deleteUser = async (id: number) => {
     return true;
   }
   return false;
+};
+
+export const userLogin = async (cpf: string, password: string) => {
+  const user = users.find((user) => user.cpf === cpf && user.password === password);
+  const secret = SECRET;
+  const secretjwt = "segredojwt";
+  if (user) {
+    const payload = {
+      id: user.id,
+      cpf: user.cpf,
+    };
+
+    const token = jwt.sign(payload, secretjwt, { expiresIn: "1h" });
+    return {
+      token,
+      userId: user.id,
+    };
+  } else {
+    return {
+      error: "Credenciais inválidas.",
+    };
+  }
 };
