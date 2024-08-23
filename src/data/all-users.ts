@@ -6,9 +6,9 @@ export const allUsers: UserModel[] = [
     firstName: "John",
     fullName: "John Doe",
     cpf: "12345678901",
+    password: "senha123", // A senha deve ser armazenada como hash
     email: "john@example.com",
     phoneNumber: "1234567890",
-    password: "senha123", // A senha deve ser armazenada como hash
     createdAt: new Date("2023-01-01"),
     updatedAt: new Date("2023-01-01"),
   },
@@ -17,9 +17,9 @@ export const allUsers: UserModel[] = [
     firstName: "Jane",
     fullName: "Jane Doe",
     cpf: "98765432100",
+    password: "senha123",
     email: "jane@example.com",
     phoneNumber: "0987654321",
-    password: "senha123",
     createdAt: new Date("2023-02-01"),
     updatedAt: new Date("2023-02-01"),
   },

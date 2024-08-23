@@ -1,6 +1,5 @@
 import { UserModel } from "../../models/user-model";
 import { allUsers, creditCardDetails, transactions, userBalances } from "../../data/all-users";
-import jwt from "jsonwebtoken";
 
 const SECRET = process.env.JWT_SECRET;
 
@@ -40,22 +39,5 @@ export const deleteUser = async (id: number) => {
 
 export const userLogin = async (cpf: string, password: string) => {
   const user = users.find((user) => user.cpf === cpf && user.password === password);
-  const secret = SECRET;
-  const secretjwt = "segredojwt";
-  if (user) {
-    const payload = {
-      id: user.id,
-      cpf: user.cpf,
-    };
-
-    const token = jwt.sign(payload, secretjwt, { expiresIn: "1h" });
-    return {
-      token,
-      userId: user.id,
-    };
-  } else {
-    return {
-      error: "Credenciais inválidas.",
-    };
-  }
+  return user;
 };
