@@ -61,6 +61,7 @@ export const userLoginService = async (cpf: string, password: string) => {
   const userReq = await userRepository.userLogin(cpf, password);
   let response;
 
+  // chamar variável de ambiente
   const secretjwt = "segredojwt";
 
   if (userReq) {
