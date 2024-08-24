@@ -3,17 +3,12 @@ import {
   createUserService,
   deleteUserService,
   getUserByIdService,
-  getUserService,
   updateUserService,
+  userLoginService,
 } from "../services/users-service";
 
 import { badRequest } from "../utils/status-http";
 import { UserModel } from "../models/user-model";
-
-export const getAllUsers = async (req: Request, res: Response) => {
-  const httpResponse = await getUserService();
-  res.status(httpResponse.statusCode).json(httpResponse.body);
-};
 
 export const getUserById = async (req: Request, res: Response) => {
   const id: string = req.params.id;
@@ -42,6 +37,12 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   const bodyValues: UserModel = req.body;
-  const httpResponse = updateUserService(id, bodyValues);
-  res.status((await httpResponse).statusCode).json((await httpResponse).body);
+  const httpResponse = await updateUserService(id, bodyValues);
+  res.status(httpResponse.statusCode).json(httpResponse.body);
+};
+
+export const userLogin = async (req: Request, res: Response) => {
+  const bodyValues: { cpf: string; password: string } = req.body;
+  const httpResponse = await userLoginService(bodyValues.cpf, bodyValues.password);
+  res.status(httpResponse.statusCode).json(httpResponse.body);
 };

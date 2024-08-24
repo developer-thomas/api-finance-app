@@ -1,22 +1,11 @@
 import { UserModel } from "../models/user-model";
 import * as userRepository from "../repositories/users/users-repository";
 import * as HttpResponse from "../utils/status-http";
-
-export const getUserService = async () => {
-  const data = await userRepository.getAllUsers();
-  let dataResponse = null;
-
-  if (!data) {
-    return await HttpResponse.noContent(data);
-  } else {
-    dataResponse = await HttpResponse.statusOk(data);
-  }
-  return dataResponse;
-};
+import jwt from "jsonwebtoken";
 
 export const getUserByIdService = async (id: string) => {
   const idParam = parseInt(id);
-  const data = await userRepository.getUserById(idParam);
+  const data = await userRepository.getUserAccountInfoById(idParam);
 
   if (!data) {
     return HttpResponse.noContent(data);
@@ -64,6 +53,29 @@ export const updateUserService = async (id: number, user: UserModel) => {
     response = await HttpResponse.badRequest();
   } else {
     response = await HttpResponse.statusOk(data);
+  }
+  return response;
+};
+
+export const userLoginService = async (cpf: string, password: string) => {
+  const userReq = await userRepository.userLogin(cpf, password);
+  let response;
+
+  // chamar variável de ambiente
+  const secretjwt = "segredojwt";
+
+  if (userReq) {
+    const payload = {
+      id: userReq.id,
+      cpf: userReq.cpf,
+    };
+
+    let userId = userReq?.id;
+    const token = jwt.sign(payload, secretjwt, { expiresIn: "1h" });
+    response = await HttpResponse.statusOk({ token, userId });
+    return response;
+  } else {
+    response = HttpResponse.badRequest({ message: "CPF ou senha incorretos." });
   }
   return response;
 };
